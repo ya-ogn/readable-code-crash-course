@@ -2,10 +2,15 @@ package readablecode.week4;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 import com.google.common.base.Strings;
 
 public class MarkdownTableUtils {
+
+	private static final String PIPE = "|";
+	private static final String HYPHEN = "-";
+	private static final String SPACE = " ";
 
 	// TODO1 : find more duplicated codes and extract them and refactor them.
 	//
@@ -26,8 +31,8 @@ public class MarkdownTableUtils {
 	 * Returns the string of table which has empty rows as Markdown table syntax.
 	 * length of captions for separator cell and empty cell is same with their
 	 * header captions
-	 * 
-	 * 
+	 *
+	 *
 	 * @param headerRowCaptions the captions for header row
 	 * @param emptyRowCount     the number of empty rows.
 	 * @return the string of table which has empty rows as Markdown table
@@ -54,44 +59,26 @@ public class MarkdownTableUtils {
 	}
 
 	private static String createEmptyRows(List<String> headerRowCaptions, int emptyRowCount) {
-		StringBuilder markdownTable = new StringBuilder();
-		for (int i = 0; i < emptyRowCount; i++) {
-			for (String e : headerRowCaptions) {
-				markdownTable.append("|");
-				markdownTable.append(Strings.repeat(" ", e.length()));
-			}
-			markdownTable.append("|");
-			markdownTable.append(System.lineSeparator());
-		}
-		return markdownTable.toString();
+		return Strings.repeat(createRowByRepeatedChar(headerRowCaptions, SPACE), emptyRowCount);
 	}
 
 	private static String createHeaderRow(List<String> headerRowCaptions) {
-		StringBuilder markdownTable = new StringBuilder();
-		for (String e : headerRowCaptions) {
-			markdownTable.append("|");
-			markdownTable.append(e);
-		}
-		markdownTable.append("|");
-		markdownTable.append(System.lineSeparator());
-		return markdownTable.toString();
+		return createRow(headerRowCaptions);
 	}
 
 	private static String createSeparatorRow(List<String> headerRowCaptions) {
-		StringBuilder markdownTable = new StringBuilder();
-		for (String e : headerRowCaptions) {
-			markdownTable.append("|");
-			markdownTable.append(Strings.repeat("-", e.length()));
-
-		}
-		markdownTable.append("|");
-		markdownTable.append(System.lineSeparator());
-
-		return markdownTable.toString();
+		return createRowByRepeatedChar(headerRowCaptions, HYPHEN);
 	}
 
 	private static String createRow(List<String> captions) {
-		return "|" + String.join("|", captions) + "|" + System.lineSeparator();
+		return PIPE + String.join(PIPE, captions) + PIPE + System.lineSeparator();
 	}
 
+	private static String createRowByRepeatedChar(List<String> headerRowCaptions, String contentOfCell) {
+		StringJoiner row = new StringJoiner(PIPE, PIPE, PIPE + System.lineSeparator());
+		for (String caption : headerRowCaptions) {
+			row.add(Strings.repeat(contentOfCell, caption.length()));
+		}
+		return row.toString();
+	}
 }
